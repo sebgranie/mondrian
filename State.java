@@ -38,6 +38,10 @@ public class State {
         return rectList;
     }
 
+    public void addRectList(Rectangle rect) {
+        rectList.add(rect);
+    }
+
     public int[][] getGrid() {
         return grid;
     }
@@ -50,6 +54,15 @@ public class State {
         for (int a = 0; a < grid.length; a++) {
             if (grid[a] == i)
                 return true;
+        }
+        return false;
+    }
+
+    public boolean contains(int[] array, int key) {
+        for (int i : array) {
+            if (i == key) {
+                return true;
+            }
         }
         return false;
     }

@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+// import javafx.util.Pair;
 // import java.lang.Math;
 
 /*
@@ -19,73 +20,130 @@ public class Main {
         State state = new State(size);
         int threshold = (int) 3 * size / 4;
         int step = 0;
+        int index = 1;
+        // int[] shapes = new int[] {};
+        // int[] shapes = {};
+        // shapes.add({1,2});
+        // Pair<Integer, String> p = new Pair<Integer, String>(10, "Hello Geeks!");
 
-        // while (state.Ints(state.getGrid()[0], 0) || step <= threshold) {
-        // }
         Random rand = new Random();
-        int By = (int) size / 2;
         int Bx = (int) 3 * size / 4;
-        int r1 = rand.nextInt(Bx) + 1;
-        int r2 = rand.nextInt(By) + 1;
-        step += r1;
-        System.out.println("r1 :" + r1);
-        System.out.println("r2 :" + r2);
-        System.out.println("step :" + step);
+        int r3 = 0;
+        int r4 = 0;
+        boolean cond = true;
+        boolean setup = true;
+        while (state.contains(state.getGrid()[0], 0) && step <= threshold) {
+            int min = 1;
+            int max = size - step - 1;
+            outerloop: while (cond || setup) {
+                System.out.println("oui");
+                r3 = rand.nextInt(Bx) + 1;
+                if (index == 1) {
+                    if (r3 != 1)
+                        r4 = rand.nextInt(Bx) + 1;
+                    else
+                        r4 = rand.nextInt(Bx) + 2;
+                } else {
+                    if (r3 != 1)
+                        r4 = (int) Math.floor(Math.random() * (max - min + 1) + min) + 1;
+                    else
+                        r4 = (int) Math.floor(Math.random() * (max - min + 1) + min) + 2;
+                }
+                if (state.getRectList().size() == 0) {
+                    break outerloop;
+                } else {
+                    for (Rectangle rec : state.getRectList()) {
+                        if ((r3 == rec.getLength() && r4 == rec.getWidth())
+                                || (r4 == rec.getLength() && r3 == rec.getWidth())) {
+                            cond = true;
+                        } else {
+                            cond = false;
+                        }
+                    }
+                }
+                setup = false;
+            }
 
-        for (int j = 0; j < r1; j++) {
-            for (int k = 0; k < r2; k++) {
-                // System.out.println(j);
-                // System.out.println(k);
-                state.setGrid(j, k, 3);
+            state.addRectList(new Rectangle(r3, r4));
+            System.out.println("r3 :" + r3);
+            System.out.println("r4 :" + r4);
+            System.out.print("step :" + step);
+            for (int a = 0; a < r3; a++) {
+                for (int b = step; b < step + r4; b++) {
+                    state.setGrid(a, b, index);
+                }
+            }
+            step += r4;
+            index += 1;
+            System.out.println();
+            System.out.println(
+                    Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
+                            "[").replace("]]", "]"));
+        }
+        System.out.println();
+        if (state.contains(state.getGrid()[0], 0)) {
+            System.out.println("final");
+
+            System.out.println("x :" + r3);
+            System.out.println("y :" + (size - step));
+            System.out.println("step :" + step);
+            for (int c = 0; c < r3; c++) {
+                for (int d = step; d < size; d++) {
+                    state.setGrid(c, d, index);
+                }
+            }
+            state.addRectList(new Rectangle(r3, (size - step)));
+            index += 1;
+            System.out.println();
+            System.out.println(
+                    Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
+                            "[").replace("]]", "]"));
+
+            System.out.println();
+            System.out.println("Shapes used : ");
+            for (Rectangle r : state.getRectList()) {
+                System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
             }
         }
+
+        System.out.println();
+        System.out.println();
+
+        int x = 0;
+        int y = 0;
+        int w = 0;
+        int z = 0;
+        out: for (x = 0; x < size; x++) {
+            if (state.getGrid()[x][0] == 0) {
+                for (y = 0; y < size; y++) {
+                    if (state.getGrid()[x][y] != 0) {
+                        y = y - 1;
+                        break out;
+                    }
+                }
+            }
+        }
+
+        for (w = x; w < size; w++) {
+            for (z = y; z < size; z++) {
+                state.setGrid(z, w, index);
+            }
+        }
+        state.addRectList(new Rectangle(x, y));
+        index += 1;
+
+        System.out.println();
         System.out.println(
                 Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
                         "[").replace("]]", "]"));
 
-        // Random rand = new Random();
-        int By1 = (int) size - r1;
-        int Bx1 = (int) 3 * size / 4;
-        int r3 = rand.nextInt(Bx1) + 1;
-        int r4 = rand.nextInt(By1) + 1;
-        step += r3;
-        System.out.println("r3 :" + r3);
-        System.out.println("r4 :" + r4);
-        System.out.println("step :" + step);
-
-        for (int a = 0; a < r3; a++) {
-            for (int b = r2; b < r2 + r4; b++) {
-                // System.out.println(a);
-                // System.out.println(b);
-                state.setGrid(a, b, 2);
-            }
+        System.out.println();
+        System.out.println("Shapes used : ");
+        for (Rectangle r : state.getRectList()) {
+            System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
         }
-
-        System.out.println(
-                Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
-                        "[").replace("]]", "]"));
 
         long end = System.currentTimeMillis();
         System.out.println("Elapsed time: " + (end - start) + " milliseconds");
-
-        // Finding the set of suitable rectangles for n × n grid
-        // Input: n
-        // Output: The set of suitable rectangles with areas
-        // 1: t ← {}
-        // 2: s ← Empty list
-        // 3: i ← 1
-        // 4: while i ≤ bn
-        // 2 c do
-        // 5: j ← 1
-        // 6: while j ≤ n do
-        // 7: if (i, j) not in t and (j, i) not in t then
-        // 8: t ← t ∪ {(i, j)}
-        // 9: Append ij to the list s
-        // 10: end if
-        // 11: j ← j + 1
-        // 12: end while
-        // 13: i ← i + 1
-        // 14: end while
-        // 15: return t, s
     }
 }
