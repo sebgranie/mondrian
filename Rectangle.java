@@ -19,6 +19,7 @@ public class Rectangle {
     public Rectangle(int new_length, int new_width) {
         length = new_length;
         width = new_width;
+        area = length * width;
     }
 
     public int getLength() {

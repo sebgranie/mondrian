@@ -5,23 +5,14 @@ import java.util.LinkedList;
 /*
  * Class to represent a state, which consist of a mondrian puzzle
  */
-
-/*
- * un état c'est un tableau 2D d'integer. Ces integer témoignent de leur appartenance
- * à un rectangle.
- *
- *
- */
 public class State {
-    private LinkedList<Rectangle> rectList;
+    private ArrayList<Rectangle> rectList;
     private int size;
-    // private ArrayList<ArrayList<ArrayList<Integer>>> grid;
     private int[][] grid;
 
     public State(int new_size) {
-        rectList = new LinkedList<Rectangle>();
+        rectList = new ArrayList<Rectangle>();
         size = new_size;
-        // grid = new ArrayList<ArrayList<ArrayList<Integer>>>(size);
         grid = new int[size][size];
 
     }
@@ -34,7 +25,7 @@ public class State {
         size = n;
     }
 
-    public LinkedList<Rectangle> getRectList() {
+    public ArrayList<Rectangle> getRectList() {
         return rectList;
     }
 
@@ -67,27 +58,9 @@ public class State {
         return false;
     }
 
-    // public int size() {
-    // return size;
-    // }
-
-    // public ArrayList<ArrayList<ArrayList<Integer>>> getGrid() {
-    // return grid;
-    // }
-
-    // public void setGrid(int x, int y, int n) {
-    // grid.get(x).set(y, n);
-    // }
-
-    // public String toString() {
-    // for (int i = 0; i < size; i++) {
-
-    // }
-    // }
-
-    public int getMondrian(LinkedList<Rectangle> rectList) {
+    public int getMondrian(ArrayList<Rectangle> rectList) {
         int largest = 0;
-        int smallest = size * size; // Math.pow(size,2)
+        int smallest = size * size;
         for (Rectangle rect : rectList) {
             if (rect.getArea() > largest) {
                 largest = rect.getArea();
@@ -98,18 +71,5 @@ public class State {
         }
         return (largest - smallest);
     }
-
-    // public ArrayList<int[]> myRectangles(int n) {
-    // int[] res;
-    // int[] areas = new LinkedList<>();
-    // int i = 1; // minimum width of a rectangle, starting at 0 is no sense
-    // while (i <= (int) (n / 2)) {
-    // int j = 1;
-    // while (j <= n) {
-    // if (res.contains([i,j]) && )
-    // }
-    // }
-    // return res;
-    // }
 
 }
