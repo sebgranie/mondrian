@@ -11,113 +11,211 @@ import java.util.*;
  */
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
 
         String grid_size = args[0];
-        int size = Integer.parseInt(grid_size);
+        int size = Integer.parseInt(grid_size); // retrie grid size as integer
 
-        State state = new State(size);
-        int threshold = (int) 3 * size / 4;
-        int step = 0;
-        int index = 1;
+        State state = new State(size); // create instance of a grid
+        int threshold = (int) 3 * size / 4; // threshold of fulfillment
+        int step = 0; // improvement to reach the right side of the grid
+        int index = 1; // current index of rectangles to be next added
 
-        Random rand = new Random();
-        int Bx = (int) 3 * size / 4;
-        int r3 = 0;
-        int r4 = 0;
-        boolean cond = true;
-        while (state.contains(state.getGrid()[0], 0) && step <= threshold) {
-            int min = 1;
-            int max = size - step - 1;
+        // Random rand = new Random();
+        // int Bx = (int) size - 1;
+        int length_gen = 0; // init next length to be generated
+        int width_gen = 0; // init next width to be generated
+        boolean cond = true; // condition to re-generate length and width to respect conditions
+        int min = 1; // minimum edge length for a generated rectangle
+        int max_length = size; // maximum edge length for a generated rectangle
+        int max_width = size - step; // maximum edge width for a generated rectangle
+        // fill the first line until threshold is reached
+        while (/* state.contains(state.getGrid()[0], 0) && */ step < threshold) {
             outerloop: while (cond) {
-                System.out.println("oui");
-                r3 = rand.nextInt(Bx) + 1;
-                if (index == 1) {
-                    if (r3 != 1)
-                        r4 = rand.nextInt(Bx) + 1;
-                    else
-                        r4 = rand.nextInt(Bx) + 2;
+                System.out.println("recherche des dimensions aléatoires");
+                // generate length from min to max_length inclusive
+                length_gen = (int) Math.floor(Math.random() * (max_length - min + 1) + min);
+                if (length_gen == 1) {
+                    // generate width from min+1 to max_width inclusive
+                    width_gen = (int) Math.floor(Math.random() * (max_width - (min + 1) + 1) + (min + 1));
                 } else {
-                    if (r3 != 1)
-                        r4 = (int) Math.floor(Math.random() * (max - min + 1) + min) + 1;
-                    else
-                        r4 = (int) Math.floor(Math.random() * (max - min + 1) + min) + 2;
+                    // generate width from min to max_width inclusive
+                    width_gen = (int) Math.floor(Math.random() * (max_width - min + 1) + min);
                 }
                 if (state.getRectList().size() == 0) {
+                    System.out.println("size rectList :" + state.getRectList().size());
+                    cond = false;
                     break outerloop;
                 } else {
                     restart: for (Rectangle rec : state.getRectList()) {
-                        if ((r3 == rec.getLength() && r4 == rec.getWidth())
-                                || (r4 == rec.getLength() && r3 == rec.getWidth())) {
+                        if (((length_gen == rec.getLength()) && (width_gen == rec.getWidth()))
+                                || ((width_gen == rec.getLength()) && (length_gen == rec.getWidth()))) {
                             cond = true;
+                            System.out.println("Current shape dictionary : ");
+                            for (Rectangle r : state.getRectList()) {
+                                System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
+                            }
+                            System.out.println("shape impossible : [" + length_gen + "," + width_gen + "]");
                             break restart;
                         } else {
+                            System.out.println("Current shape dictionary : ");
+                            for (Rectangle r : state.getRectList()) {
+                                System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
+                            }
+                            System.out.println("shape possible : [" + length_gen + "," + width_gen + "]");
                             cond = false;
                         }
                     }
                 }
             }
-            state.addRectList(new Rectangle(r3, r4));
-            System.out.println("r3 :" + r3);
-            System.out.println("r4 :" + r4);
+            state.addRectList(new Rectangle(length_gen, width_gen));
+            System.out.println("cond :" + cond);
+            System.out.println("length_gen :" + length_gen);
+            System.out.println("width_gen :" + width_gen);
             System.out.println("step :" + step);
-            System.out.println("index end while :" + index);
-            for (int a = 0; a < r3; a++) {
-                for (int b = step; b < step + r4; b++) {
+            System.out.println("index before threshold :" + index);
+            for (int a = 0; a < length_gen; a++) {
+                for (int b = step; b < step + width_gen; b++) {
                     state.setGrid(a, b, index);
                 }
             }
-            step += r4;
+            step += width_gen;
             index += 1;
-            System.out.println();
+            System.out.println("Shapes used : ");
+            for (Rectangle r : state.getRectList()) {
+                System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
+            }
             System.out.println(
                     Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
                             "[").replace("]]", "]"));
+            cond = true;
         }
         System.out.println();
-        System.out.println("FINAL STEP ");
-        if (state.contains(state.getGrid()[0], 0)) {
-            System.out.println("x :" + r3);
-            System.out.println("y :" + (size - step));
+        int final_line_length = (int) Math.floor(Math.random() * (max_length - min + 1) + min);
+        if (/* (state.contains(state.getGrid()[0], 0)) && */ (step >= threshold) && (step < size)) {
+            System.out.println("FINAL STEP ");
+            System.out.println("length_gen :" + final_line_length);
+            System.out.println("width_gen :" + (size - step));
             System.out.println("step :" + step);
-            System.out.println("index :" + index);
-            for (int c = 0; c < r3; c++) {
+            System.out.println("index final step:" + index);
+            for (int c = 0; c < final_line_length; c++) {
                 for (int d = step; d < size; d++) {
                     state.setGrid(c, d, index);
                 }
             }
-            state.addRectList(new Rectangle(r3, (size - step)));
+            state.addRectList(new Rectangle(final_line_length, (size - step)));
             index += 1;
-            System.out.println();
-            System.out.println(
-                    Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
-                            "[").replace("]]", "]"));
-
             System.out.println();
             System.out.println("Shapes used : ");
             for (Rectangle r : state.getRectList()) {
                 System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
             }
-            System.out.println("index end if:" + index);
+            System.out.println(
+                    Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
+                            "[").replace("]]", "]"));
+
+            System.out.println();
+            // System.out.println("index end if:" + index);
         }
 
         System.out.println();
         System.out.println();
-        System.out.println("remplissage vers le bas");
+        System.out.println("REMPLISSAGE VERS LE BAS");
         System.out.println();
 
         ArrayList<Rectangle> tempoList = new ArrayList<Rectangle>();
         int temp1 = 0;
+        boolean condition = false;
+        // int temp_width_gen = 0;
         for (Rectangle r : state.getRectList()) {
-            for (int q = r.getLength(); q < size; q++) {
-                for (int s = temp1; s < r.getWidth() + temp1; s++) {
-                    state.setGrid(q, s, index);
+            out1: for (Rectangle R : state.getRectList()) {
+                if ((((size - r.getLength()) == R.getLength()) && (r.getWidth() == R.getWidth()))
+                        || ((r.getLength() == R.getLength())
+                                && ((size - r.getWidth()) == R.getWidth()))) {
+                    condition = false;
+                    break out1;
+                } else {
+                    condition = true;
                 }
             }
-            temp1 += r.getWidth();
-            index += 1;
-            tempoList.add(new Rectangle(size - r.getLength(), r.getWidth()));
+            if (condition) {
+                System.out.println("r.getLength() : " + r.getLength());
+                System.out.println("size : " + size);
+                System.out.println("temp1 : " + temp1);
+                System.out.println("r.getWidth()+temp1 : " + (r.getWidth() + temp1));
+                System.out.println("index : " + index);
+                System.out.println();
+                for (int q = r.getLength(); q < size; q++) {
+                    for (int s = temp1; s < r.getWidth() + temp1; s++) {
+                        state.setGrid(q, s, index);
+                    }
+                }
+                temp1 += r.getWidth();
+                index += 1;
+                tempoList.add(new Rectangle(size - r.getLength(), r.getWidth()));
+                state.getRectList().addAll(tempoList);
+            }
+            boolean out = false;
+            out2: if (!condition) {
+                for (Rectangle Rect : state.getRectList()) {
+                    if (((size - r.getLength() - 1) == Rect.getLength()
+                            && r.getWidth() == Rect.getWidth())
+                            || (r.getWidth() == Rect.getLength()
+                                    && (size - r.getLength() - 1) == Rect.getWidth())) {
+                        condition = false;
+                        out = true;
+                        break out2;
+                    } else {
+                        condition = true;
+                    }
+                }
+                if (condition) {
+                    System.out.println("r.getLength() : " + r.getLength());
+                    System.out.println("size-1 : " + (size - 1));
+                    System.out.println("temp1 : " + temp1);
+                    System.out.println("r.getWidth()+temp1 : " + (r.getWidth() + temp1));
+                    System.out.println("index : " + index);
+                    System.out.println();
+                    for (int q = r.getLength(); q < size - 1; q++) {
+                        for (int s = temp1; s < r.getWidth() + temp1; s++) {
+                            state.setGrid(q, s, index);
+                        }
+                    }
+                    temp1 += r.getWidth();
+                    index += 1;
+                    tempoList.add(new Rectangle(size - r.getLength() - 1, r.getWidth()));
+
+                    for (Rectangle Re : state.getRectList()) {
+                        if ((1 == Re.getLength() && (size - temp1) == Re.getWidth())
+                                || ((size - temp1) == Re.getLength() && (1 == Re.getWidth()))) {
+                            System.out.println("Impossible to build this initial state  1");
+                            // throw new Exception("Impossible to build this initial state");
+                        }
+                    }
+                    System.out.println("size-1 : " + (size - 1));
+                    System.out.println("size : " + size);
+                    System.out.println("temp1 : " + temp1);
+                    System.out.println("size : " + size);
+                    System.out.println("index : " + index);
+                    System.out.println();
+                    for (int o = size - 1; o < size; o++) {
+                        for (int p = temp1; p < size; p++) {
+                            state.setGrid(o, p, index);
+                        }
+                    }
+                    temp1 += size - temp1;
+                    index += 1;
+                    tempoList.add(new Rectangle(1, size - temp1));
+                } else {
+                    System.out.println("Impossible to build this initial state 2");
+                    // throw new Exception("Impossible to build this initial state");
+                }
+            } else {
+                if (out)
+                    System.out.println("Impossible to build this initial state  3");
+                // throw new Exception("Impossible to build this initial state");
+            }
         }
 
         state.getRectList().addAll(tempoList);
