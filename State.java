@@ -29,6 +29,17 @@ public class State {
         return rectList;
     }
 
+    public void resetRectList() {
+        rectList = new ArrayList<Rectangle>();
+    }
+
+    public ArrayList<Rectangle> setRectList(ArrayList<Rectangle> listRect) {
+        for (Rectangle r : listRect) {
+            rectList.add(new Rectangle(r.getLength(), r.getLength()));
+        }
+        return rectList;
+    }
+
     public void addRectList(Rectangle rect) {
         rectList.add(rect);
     }
@@ -41,10 +52,12 @@ public class State {
         grid[x][y] = n;
     }
 
-    public boolean Ints(int[] grid, int i) {
+    public boolean searchZero(int[][] grid) {
         for (int a = 0; a < grid.length; a++) {
-            if (grid[a] == i)
-                return true;
+            for (int b = 0; b < grid.length; b++) {
+                if (grid[a][b] == 0)
+                    return true;
+            }
         }
         return false;
     }
