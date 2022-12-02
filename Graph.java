@@ -74,6 +74,8 @@ public class Graph {
                 for (Rectangle r : state.getRectList()) {
                     System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
                 }
+                System.out.println("Mondrian Score : " + state.getMondrian(state.getRectList()));
+                System.out.println("\n");
                 index += 1;
                 cond = true;
             } else {
