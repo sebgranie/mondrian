@@ -1,17 +1,16 @@
-import java.io.*;
-import java.util.*;
+import java.util.Arrays;
 
 /*
  * Classe to represent the state space using adjacency lists
  */
 
 public class Graph {
-    private State[] states;
-    private int numStates = 0;
+    private State[] states; // array of states building a state space
+    private int numStates = 0; // number of states in the state space
 
     // create a new innstance of Graph
     public Graph(State initial_state) {
-        int max_size = 16;
+        int max_size = 16; // maximum number of nodes (state) in the state space
         states = new State[max_size];
         states[0] = initial_state;
         numStates += 1;
@@ -39,13 +38,13 @@ public class Graph {
 
     // display all the states of the state space built
     public void display_state_space() {
-        int layer = 0;
-        int index = 0;
+        int layer = 0; // a layer represent each level (depth) of the state space
+        int index = 0; // index of a state within a common layer (equal depth)
         boolean cond = false;
         System.out.println();
         System.out.println("State space representation : ");
         System.out.println("Layer number : " + layer);
-        System.out.println("length states : " + states.length);
+        System.out.println("Maximum number of states : " + states.length);
         outerloop: for (State state : states) {
             if (state != null) {
                 System.out.println("index : " + index);
