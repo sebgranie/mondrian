@@ -3,12 +3,6 @@
  * Class to represent a rectangle of a grid
  */
 
-/*
- * un rectangle est définie par ses quatre coordonnées x1, x2, y1, y2
- * pour le repérer dans l'espace 2D de la grille.
- *
- */
-
 public class Rectangle {
     private int length; // length of Rectangle
     private int width; // width of Rectangle

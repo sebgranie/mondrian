@@ -18,7 +18,7 @@ public class Main {
         int size = Integer.parseInt(grid_size); // retrie grid size as integer
 
         State state = new State(size); // create instance of a grid
-        int threshold = (int) 3 * size / 4; // threshold of fulfillment
+        // int threshold = (int) 3 * size / 4; // threshold of fulfillment
         int step = 0; // improvement to reach the right side of the grid
         int index = 1; // current index of rectangles to be next added
 
@@ -26,7 +26,8 @@ public class Main {
         // int Bx = (int) size - 1;
         int length_gen = 0; // init next length to be generated
         int width_gen = 0; // init next width to be generated
-        boolean cond = true; // condition to re-generate length and width to respect conditions
+        // boolean cond = true; // condition to re-generate length and width to respect
+        // conditions
         int min = 1; // minimum edge length for a generated rectangle
         int max_length = (int) 3 * size / 4; // maximum edge length for a generated rectangle
         int max_width = (int) (3 * (size) / 4) - step; // maximum edge width for a generated rectangle
@@ -38,8 +39,9 @@ public class Main {
          */
 
         /* NEW METHOD */
-        length_gen = (int) Math.floor(Math.random() * (max_length - min + 1) + min); // generate length from min to
-                                                                                     // max_length inclusive
+        length_gen = (int) Math.floor(Math.random() * ((max_length - 1) - min + 1) + min); // generate length from min
+                                                                                           // to
+        // max_length inclusive
         if (length_gen == 1) {
             // generate width from min+1 to max_width inclusive
             width_gen = (int) Math.floor(Math.random() * (max_width - (min + 1) + 1) + (min + 1));
@@ -56,10 +58,14 @@ public class Main {
         }
         step += width_gen;
         index += 1;
-
-        length_gen = (int) Math.floor(Math.random() * (max_length - min + 1) + min); // generate length from min to
-                                                                                     // max_length inclusive
         width_gen = size - width_gen; // fill first row
+        if (width_gen == 1) {
+            // generate width from min+1 to max_length-1 inclusive
+            length_gen = (int) Math.floor(Math.random() * ((max_length - 1) - (min + 1) + 1) + (min + 1));
+        } else {
+            // generate width from min to max_length-1 inclusive
+            length_gen = (int) Math.floor(Math.random() * ((max_length - 1) - min + 1) + min);
+        }
         state.addRectList(new Rectangle(length_gen, width_gen));
         System.out.println("New shape added (length_gen, width_gen) : [" + length_gen + "," + width_gen + "]");
         for (int a = 0; a < length_gen; a++) {
@@ -76,7 +82,7 @@ public class Main {
         for (Rectangle rect : state.getRectList()) {
             length_gen = size - rect.getLength(); // fill the vertical space under each rectangle from first row
             width_gen = rect.getWidth(); // same width as above's rectangle
-            tempoList.add(new Rectangle(rect.getLength(), rect.getWidth()));
+            tempoList.add(new Rectangle(length_gen, width_gen));
             System.out.println("New shape added (length_gen, width_gen) : [" + length_gen + "," + width_gen + "]");
             for (int a = rect.getLength(); a < size; a++) {
                 for (int b = step; b < step + width_gen; b++) {
@@ -86,6 +92,11 @@ public class Main {
             step += width_gen;
             index += 1;
         }
+        state.getRectList().addAll(tempoList);
+
+        // beginning of the state space after building initial state
+        Graph stateSpace = new Graph(state);
+        stateSpace.display_state_space();
 
         /* END NEW METHOD */
 
@@ -362,23 +373,19 @@ public class Main {
         // // }
         // /* previous method ending */
 
-        state.getRectList().addAll(tempoList);
-        // state.resetRectList();
-        // state.setRectList(tempoList);
-        System.out.println();
-        System.out.println(
-                Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
-                        "[").replace("]]", "]"));
+        // state.getRectList().addAll(tempoList);
         // System.out.println();
-        System.out.println("Shapes used : ");
-        for (Rectangle r : state.getRectList()) {
-            System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
-        }
-        System.out.println();
-        System.out.println("Mondrian Score : " + state.getMondrian(state.getRectList()));
-        System.out.println();
-        // System.out.println("index :" + index);
+        // System.out.println(
+        // Arrays.deepToString(state.getGrid()).replace("], ", "]\n").replace("[[",
+        // "[").replace("]]", "]"));
+        // System.out.println("Shapes used : ");
+        // for (Rectangle r : state.getRectList()) {
+        // System.out.println(" --> " + "(" + r.getLength() + "," + r.getWidth() + ")");
         // }
+        // System.out.println();
+        // System.out.println("Mondrian Score : " +
+        // state.getMondrian(state.getRectList()));
+        // System.out.println();
 
         long end = System.currentTimeMillis();
         System.out.println("Elapsed time: " + (end - start) + " milliseconds");

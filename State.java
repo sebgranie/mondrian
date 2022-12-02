@@ -82,6 +82,8 @@ public class State {
                 smallest = rect.getArea();
             }
         }
+        System.out.println("largest :" + largest);
+        System.out.println("smallest :" + smallest);
         return (largest - smallest);
     }
 
