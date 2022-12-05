@@ -1,11 +1,12 @@
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /*
  * Class to represent a state, which consist of a mondrian puzzle
  */
 public class State implements Comparable<State> {
-    private ArrayList<Rectangle> rectList; // List of rectangle shaping the puzzle
+    private LinkedList<Rectangle> rectList; // List of rectangle shaping the puzzle
+    private LinkedList<State> adjList; // list of states neighbours in the state space
     private int size; // size of the puzzle (grid)
     private int[][] grid; // 2D table to represent a state
     private int mondrian; // mondrian score of the state
@@ -15,7 +16,8 @@ public class State implements Comparable<State> {
 
     // Create an instance of a state
     public State(int new_size) {
-        rectList = new ArrayList<Rectangle>();
+        rectList = new LinkedList<Rectangle>();
+        adjList = new LinkedList<State>();
         size = new_size;
         grid = new int[size][size];
     }
@@ -28,6 +30,11 @@ public class State implements Comparable<State> {
         } else {
             return 1;
         }
+    }
+
+    // return the adjacency list of a State in the state space (list of neighbours)
+    public LinkedList<State> getAdjList() {
+        return adjList;
     }
 
     // getter to access the boolean visited attribute
@@ -76,13 +83,13 @@ public class State implements Comparable<State> {
     }
 
     // getter to access the list of all rectangle's shapes of a state
-    public ArrayList<Rectangle> getRectList() {
+    public LinkedList<Rectangle> getRectList() {
         return rectList;
     }
 
     // reset the list of rectangle's shape of a state
     public void resetRectList() {
-        rectList = new ArrayList<Rectangle>();
+        rectList = new LinkedList<Rectangle>();
     }
 
     // Add a new rectangle's shape to the list of rectangle's shape
@@ -134,7 +141,7 @@ public class State implements Comparable<State> {
     }
 
     // Compute the Mondrian Score of a state
-    public int getMondrian(ArrayList<Rectangle> rectList) {
+    public int getMondrian(LinkedList<Rectangle> rectList) {
         int largest = 0;
         int smallest = size * size;
         for (Rectangle rect : rectList) {
@@ -169,9 +176,13 @@ public class State implements Comparable<State> {
         return true;
     }
 
-    // Split action
+    /*
+     * Split action
+     * we are looking for splitting the largest
+     * rectangle to minimize the Mondrian Score
+     */
     public void split() {
-        int minArea = size * size;
+        int maxArea = 0;
         int length = 0;
         int width = 0;
         int current_index = 0;
@@ -179,8 +190,8 @@ public class State implements Comparable<State> {
         int[] coord1 = new int[] { 0, 0, 0, 0 };
         int[] coord2 = new int[] { 0, 0, 0, 0 };
         for (Rectangle rect : rectList) {
-            if (rect.getArea() < minArea) {
-                minArea = rect.getArea();
+            if (rect.getArea() > maxArea) {
+                maxArea = rect.getArea();
                 length = rect.getLength();
                 width = rect.getWidth();
                 current_index = rect.getIndex();
@@ -248,5 +259,14 @@ public class State implements Comparable<State> {
         // } else if ((length % 2 != 0) && (width % 2 != 0)) {
         // int c = 0;
         // }
+    }
+
+    public void Merge() {
+    }
+
+    public void SplitMerge() {
+    }
+
+    public void MergeSplit() {
     }
 }

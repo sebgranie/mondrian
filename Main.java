@@ -1,7 +1,7 @@
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.LinkedList;
 
 /*
  * Program representing the Mondrian Tiling Problem
@@ -15,7 +15,7 @@ public class Main {
         long start = System.currentTimeMillis();
 
         String grid_size = args[0];
-        int size = Integer.parseInt(grid_size); // retrie grid size as integer
+        int size = Integer.parseInt(grid_size); // retrive grid_size as an integer
         State state = new State(size); // create instance of a grid
         while (!state.isValid()) {
             state = new State(size);
@@ -26,27 +26,17 @@ public class Main {
             int min = 1; // minimum edge length for a generated rectangle
             int max_length = (int) 3 * size / 4; // maximum edge length for a generated rectangle
             int max_width = (int) (3 * (size) / 4) - step; // maximum edge width for a generated rectangle
-
-            /* NEW METHOD */
-            length_gen = (int) Math.floor(Math.random() * ((max_length - 1) - min + 1) + min); // generate length from
-                                                                                               // min
-                                                                                               // to
-            // max_length inclusive
+            length_gen = (int) Math.floor(Math.random() * ((max_length - 1) - min + 1) + min);
             if (length_gen == 1) {
-                // generate width from min+1 to max_width inclusive
                 width_gen = (int) Math.floor(Math.random() * (max_width - (min + 1) + 1) + (min + 1));
             } else {
-                // generate width from min to max_width inclusive
                 width_gen = (int) Math.floor(Math.random() * (max_width - min + 1) + min);
             }
-            // int prev_length = length_gen;
             int prev_width = width_gen;
             Rectangle rectangle = new Rectangle(length_gen, width_gen, index);
             int[] coordArray = new int[] { 0, length_gen - 1, 0, width_gen - 1 };
             rectangle.setCoordinates(coordArray);
             state.addRectList(rectangle);
-            // System.out.println("New shape added (length_gen, width_gen) : [" + length_gen
-            // + "," + width_gen + "]");
             for (int a = 0; a < length_gen; a++) {
                 for (int b = step; b < step + width_gen; b++) {
                     state.setGrid(a, b, index);
@@ -56,18 +46,14 @@ public class Main {
             index += 1;
             width_gen = size - width_gen; // fill first row
             if (width_gen == 1) {
-                // generate width from min+1 to max_length-1 inclusive
                 length_gen = (int) Math.floor(Math.random() * ((max_length - 1) - (min + 1) + 1) + (min + 1));
             } else {
-                // generate width from min to max_length-1 inclusive
                 length_gen = (int) Math.floor(Math.random() * ((max_length - 1) - min + 1) + min);
             }
             rectangle = new Rectangle(length_gen, width_gen, index);
             coordArray = new int[] { 0, length_gen - 1, prev_width, size - 1 };
             rectangle.setCoordinates(coordArray);
             state.addRectList(rectangle);
-            // System.out.println("New shape added (length_gen, width_gen) : [" + length_gen
-            // + "," + width_gen + "]");
             for (int a = 0; a < length_gen; a++) {
                 for (int b = step; b < step + width_gen; b++) {
                     state.setGrid(a, b, index);
@@ -75,7 +61,7 @@ public class Main {
             }
             step += width_gen;
             index += 1;
-            ArrayList<Rectangle> tempoList = new ArrayList<Rectangle>();
+            LinkedList<Rectangle> tempoList = new LinkedList<Rectangle>();
             step = 0;
             for (Rectangle rect : state.getRectList()) {
                 length_gen = size - rect.getLength(); // fill the vertical space under each rectangle from first row
@@ -84,8 +70,6 @@ public class Main {
                 coordArray = new int[] { rect.getLength(), size - 1, step, step + rect.getWidth() - 1 };
                 rectangle.setCoordinates(coordArray);
                 tempoList.add(rectangle);
-                // System.out.println("New shape added (length_gen, width_gen) : [" + length_gen
-                // + "," + width_gen + "]");
                 for (int a = rect.getLength(); a < size; a++) {
                     for (int b = step; b < step + width_gen; b++) {
                         state.setGrid(a, b, index);
@@ -107,8 +91,8 @@ public class Main {
         // beginning of the state space after building initial state
         Graph stateSpace = new Graph(state);
         List<String> actions = List.of("Split", "Merge", "SplitMerge", "MergeSplit");
-        int maxDepth = 10;
-        int maxSize = 30;
+        int maxDepth = 4; // maximum depth of the state space
+        int maxSize = 50; // maximum size of the Priority Queue
         PriorityQueue<State> pQueue = new PriorityQueue<State>(maxSize);
         state.setDepth(0);
         state.setMondrian(state.getMondrian(state.getRectList()));
@@ -157,7 +141,6 @@ public class Main {
         Arrays.deepToString(bestState.getGrid()).replace("], ", "]\n").replace("[[", "[").replace("]]", "]");
         System.out.println();
         System.out.println("Mondrian Score : " + bestState.getMondrian(bestState.getRectList()));
-        /* END NEW METHOD */
 
         long end = System.currentTimeMillis();
         System.out.println("Elapsed time: " + (end - start) + " milliseconds");

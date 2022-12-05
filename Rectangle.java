@@ -65,8 +65,8 @@ public class Rectangle {
         return area;
     }
 
-    // setter to set the area of a rectangle
-    public void setArea() {
+    // mathod to compute the area of a rectangle
+    public void ComputeArea() {
         area = length * width;
     }
 

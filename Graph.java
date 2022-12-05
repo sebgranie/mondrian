@@ -1,12 +1,13 @@
 import java.util.Arrays;
 
 /*
- * Classe to represent the state space using adjacency lists
+ * Class to represent the state space using adjacency lists
  */
 
 public class Graph {
     private State[] states; // array of states building a state space
     private int numStates = 0; // number of states in the state space
+    private int max_size;
 
     // create a new innstance of Graph
     public Graph(State initial_state) {
@@ -29,6 +30,16 @@ public class Graph {
     // getter to a specific state list of neighbours using index
     public State getState(int n) {
         return states[n];
+    }
+
+    // getter to access the max_size of the state space (number of nodes)
+    public int getMaxSize() {
+        return max_size;
+    }
+
+    // setter to set the max_size of the state space
+    public void setMaxSize(int n) {
+        max_size = n;
     }
 
     // getter to the numStates attribute
